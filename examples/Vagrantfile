@@ -1,0 +1,49 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure('2') do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  config.vm.box = 'base'
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.provider 'hetznercloud' do |hcloud, override|
+
+    # hcloud.token = "YOUR_TOKEN or set via HETZNERCLCOUD_TOKEN environment variable"
+
+    ## SSH Key must exist and must match override.ssh.private_key_path
+    hcloud.ssh_keys = ['test']
+    override.ssh.private_key_path = './keys/testkey2'
+
+  end
+  config.vm.provision 'shell', inline: <<-SHELL
+     yum update -y
+  SHELL
+
+  config.vm.define 'web' do |web|
+    config.vm.provider 'hetznercloud' do |hcloud|
+      hcloud.name = 'web'
+      hcloud.server_type = 'cx11'
+    end
+    web.vm.provision 'shell', inline: <<-SHELL
+     yum install -y httpd
+    SHELL
+  end
+
+  config.vm.define 'db' do |db|
+    config.vm.provider 'hetznercloud' do |hcloud|
+      hcloud.name = 'db'
+      hcloud.server_type = 'cx21'
+    end
+    db.vm.provision 'shell', inline: <<-SHELL
+     yum install -y mariadb
+    SHELL
+  end
+end

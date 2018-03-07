@@ -12,7 +12,7 @@ Vagrant.configure('2') do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = 'base'
+  config.vm.box = 'elconas/base'
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.provider 'hetznercloud' do |hcloud, override|
 
@@ -20,6 +20,11 @@ Vagrant.configure('2') do |config|
 
     ## SSH Key must exist and must match override.ssh.private_key_path
     hcloud.ssh_keys = ['test']
+
+    ## Select an explicit context in the config file
+    ## If not speicified, the default one is used
+    # hcloud.active_context = 'non_default_context'
+
     override.ssh.private_key_path = './keys/testkey2'
 
   end
@@ -34,6 +39,7 @@ Vagrant.configure('2') do |config|
     end
     web.vm.provision 'shell', inline: <<-SHELL
      yum install -y httpd
+     systemctl start httpd
     SHELL
   end
 

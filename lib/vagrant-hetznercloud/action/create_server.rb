@@ -50,6 +50,8 @@ module VagrantPlugins
                   response: e.response.body
           end
 
+          env[:ui].info(" -- Server IP: #{server.public_ip_address}")
+
           @logger.info("Machine '#{name}' created.")
 
           # Immediately save the ID since it is created at this point.
@@ -58,7 +60,7 @@ module VagrantPlugins
           # destroy the server if we were interrupted
           destroy(env) if env[:interrupted]
 
-          @logger.info("Waiting for Machine '#{name}' to be ready.")
+          @logger.info("Waiting for Machine '#{name}' with IP #{server.public_ip_address} to be ready.")
           server.wait_for { ready? }
 
           @app.call(env)

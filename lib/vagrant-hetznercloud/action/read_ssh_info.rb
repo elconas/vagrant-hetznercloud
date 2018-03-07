@@ -43,6 +43,7 @@ module VagrantPlugins
           end
 
           { host: host, port: 22, username: 'root' }
+
         end
       end
     end

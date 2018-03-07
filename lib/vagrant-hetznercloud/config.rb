@@ -1,3 +1,5 @@
+require 'toml'
+
 module VagrantPlugins
   module Hetznercloud
     class Config < Vagrant.plugin('2', :config)
@@ -65,6 +67,10 @@ module VagrantPlugins
       # @return [Array]
       attr_accessor :ssh_keys
 
+      # active context in the hcloud config file
+      #
+      # @return [String]
+      attr_accessor :active_context
 
       def initialize
         @user_data             = UNSET_VALUE
@@ -78,6 +84,7 @@ module VagrantPlugins
         @ssh_host_attribute    = UNSET_VALUE
         @token                 = UNSET_VALUE
         @ssh_keys              = UNSET_VALUE
+        @active_context        = UNSET_VALUE
       end
 
       def finalize!
@@ -95,7 +102,8 @@ module VagrantPlugins
         @server_check_interval = 2 if @server_check_interval == UNSET_VALUE
         @server_ready_timeout  = 120 if @server_ready_timeout == UNSET_VALUE
         @ssh_host_attribute    = nil if @ssh_host_attribute == UNSET_VALUE
-        @token                 = ENV['HETZNERCLOUD_TOKEN'] if @token == UNSET_VALUE
+        @active_context        = nil if @active_context == UNSET_VALUE
+        @token                 = (ENV['HETZNERCLOUD_TOKEN'] || get_token(@active_context)) if @token == UNSET_VALUE
         @ssh_keys              = [] if @ssh_keys == UNSET_VALUE
       end
 
@@ -107,6 +115,30 @@ module VagrantPlugins
 
         { 'Hetznercloud Provider' => errors }
       end
+
+      # Get the token from the hckoud cli config file (if it exists)
+      def get_token(active_context = nil)
+
+              # The config file
+              config_file = ENV['HOME'] + "/.config/hcloud/cli.toml"
+              return nil unless File.exists?(config_file)
+
+              # Load the file
+              config_data = TOML.load_file(config_file)
+
+              # default context if not specified
+              active_context = config_data["active_context"] if active_context.nil?
+
+              context = config_data["contexts"].find { |context|
+                      context["name"] == active_context
+              }
+
+              # Not found
+              return nil if context.nil?
+              return nil unless context.has_key?('token')
+              return context["token"]
+      end
+
     end
   end
 end

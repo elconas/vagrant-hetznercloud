@@ -26,4 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop'
 
   spec.add_dependency 'fog-hetznercloud', '~> 0.0.2'
+  spec.add_dependency 'toml'
 end

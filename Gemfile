@@ -1,9 +1,7 @@
 source 'https://rubygems.org'
 
 group :plugins do
-  # Specify your gem's dependencies in vagrant-scaleway.gemspec
-  #gemspec
-  gem "vagrant-hetznercloud", path: "."
+  gemspec
 end
 
 group :development do

@@ -3,35 +3,34 @@ require 'toml'
 module VagrantPlugins
   module Hetznercloud
     class Config < Vagrant.plugin('2', :config)
-      # The bootscript ID. If nil, the default bootscript for the image will be
-      # used.
+      # The user_data file to use (e.g. for bootstrapping)
       #
       # @return [String]
       attr_accessor :user_data
 
-      # The type of the server to launch, such as 'C1'. Defaults to 'C2S'.
+      # The type of the server to launch, such as 'cx11'. Defaults to 'cx11'.
       #
       # @return [String]
       attr_accessor :server_type
 
-      # The image ID or name.
+      # The image ID or name like 'centos-7'.
       #
       # @return [String]
       attr_accessor :image
 
-      # The name of the server.
+      # The name of the server. Optional. Can be auto generated like h-xxxxxx.
       #
       # @return [String]
       attr_accessor :name
 
       # The name of the Hetznercloud location to create the server in. It can also be
-      # configured with SCW_REGION environment variable. Defaults to par1.
+      # configured with HETZNERCLOUD_LOCATION environment variable.
       #
       # @return [String]
       attr_accessor :location
 
-      # The security group ID to associate with the server. If nil,
-      # organization's default security group will be used.
+      # The name of the Hetznercloud datacenter to create the server in. It can also be
+      # configured with HETZNERCLOUD_DATACENTER environment variable.
       #
       # @return [String]
       attr_accessor :datacenter
@@ -57,17 +56,19 @@ module VagrantPlugins
       attr_accessor :ssh_host_attribute
 
       # The API token to access Hetznercloud. It can also be configured with
-      # HETZNERCLOUD_TOKEN environment variable.
+      # HETZNERCLOUD_TOKEN environment variable. If not specified it uses the
+      # hcloud cli config file (.config/hcloud/cli.toml)
       #
       # @return [String]
       attr_accessor :token
 
-      # ssh keys
+      # ssh keys as array (e.g. ['testkey'])
       #
       # @return [Array]
       attr_accessor :ssh_keys
 
       # active context in the hcloud config file
+      # If empty default context is used.
       #
       # @return [String]
       attr_accessor :active_context
@@ -97,7 +98,7 @@ module VagrantPlugins
           @name = "h-#{SecureRandom.hex(3)}"
         end
 
-        @region                = (ENV['HETZNERCLOUD_REGION']) if @region == UNSET_VALUE
+        @location              = (ENV['HETZNERCLOUD_LOCATION']) if @location == UNSET_VALUE
         @datacenter            = (ENV['HETZNERCLOUD_DATACENTER']) if @datacenter == UNSET_VALUE
         @server_check_interval = 2 if @server_check_interval == UNSET_VALUE
         @server_ready_timeout  = 120 if @server_ready_timeout == UNSET_VALUE

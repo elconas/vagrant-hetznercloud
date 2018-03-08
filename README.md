@@ -44,6 +44,17 @@ Install using standard Vagrant plugin installation methods.
 
 ## Usage
 
+1) Generate Token in the Web GUI of Hetznercloud
+
+Create new API token in the Hetznercloud [Console](https://console.hetzner.cloud/).
+
+2) Optional: Install the hcloud cli
+
+If you install the [Hetzner cli](https://github.com/hetznercloud/cli) and configure it with credentials,
+the vagrant-hetznercloud driver automatically picks up your default context
+from the ~/.config/hcloud/cli.toml settings file. Therefor you do not need to
+set the credentials in the environment or in the Vagrantfile.
+
 1) Create Vagrantfile
 
 See [examples/Vagrantfile](examples/Vagrantfile) for an example Vagrantfile:
@@ -52,8 +63,20 @@ See [examples/Vagrantfile](examples/Vagrantfile) for an example Vagrantfile:
 
 And then run `vagrant up` and specify the `hetznercloud` provider:
 
+2.1) With hcloud cli installed and configured
+
+    $ vagrant up --provider=hetznercloud
+
+2.1) With Token via environment
+
     $ export HETZNERCLOUD_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
     $ vagrant up --provider=hetznercloud
+
+2.2) With Token in Vagrantfile
+
+See [examples/Vagrantfile](examples/Vagrantfile).
+
+**Note: This is not recommended, as this tends to leak credentials in SCM**
 
 ## Configurations
 

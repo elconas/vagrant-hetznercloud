@@ -55,3 +55,4 @@ keys/*
 .vagrant/
 .bundle/
 vendor/cache
+examples/.vagrant/

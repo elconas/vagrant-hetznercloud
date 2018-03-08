@@ -9,6 +9,8 @@ en:
       Server is not created. Please run `vagrant up` first.
     ready: |-
       Machine is booted and ready for use!
+    off: |-
+      Machine is powered off.
     starting: |-
       Starting the server...
     stopping: |-
@@ -58,6 +60,11 @@ en:
         not created
       long_not_created: |-
         The server is not created. Run `vagrant up` to create it.
+
+      short_off: |-
+        stopped
+      long_off: |-
+        The server is stopped. Run `vagrant up` to start it.
 
       short_stopped: |-
         stopped

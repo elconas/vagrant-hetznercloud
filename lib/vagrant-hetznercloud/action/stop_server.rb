@@ -10,7 +10,7 @@ module VagrantPlugins
         def call(env)
           server = env[:hetznercloud_compute].servers.get(env[:machine].id)
 
-          if env[:machine].state.id == :stopped
+          if env[:machine].state.id == :off
             env[:ui].info(I18n.t('vagrant_hetznercloud.already_status', status: env[:machine].state.id))
           else
             env[:ui].info(I18n.t('vagrant_hetznercloud.stopping'))
